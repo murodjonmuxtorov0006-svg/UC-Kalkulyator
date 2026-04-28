@@ -7,44 +7,44 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* MANA SHU YERGA SIZNING RASMINGIZ QO'YILDI */
             background-image: url('uc_kalkulyator_background.svg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-color: #111; /* Agar internet sekinlashsa, qora fon turadi */
+            background-color: #111; 
             color: #ffffff;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden; /* Ekran yoniga siljib ketmasligi uchun */
         }
 
         .calculator-box {
-            background-color: rgba(15, 15, 15, 0.85); /* Quti orqasi chiroyli shaffof bo'lishi uchun */
+            background-color: rgba(15, 15, 15, 0.85); 
             padding: 35px 30px;
             border-radius: 15px;
-            box-shadow: 0 0 25px rgba(255, 165, 0, 0.4); /* Tangalarga moslashib, sariq-tilla rang nur sochadi */
+            box-shadow: 0 0 25px rgba(255, 165, 0, 0.4);
             width: 100%;
             max-width: 400px;
             backdrop-filter: blur(12px); 
             border: 1px solid rgba(255, 165, 0, 0.3);
             transition: 0.3s;
+            position: relative;
+            z-index: 10;
         }
 
         h2 {
             text-align: center;
-            color: #ffcc00; /* Tanga rangidagi sarlavha */
+            color: #ffcc00; 
             margin-top: 0;
             margin-bottom: 25px;
             text-shadow: 2px 2px 4px #000;
             font-size: 24px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+        .input-group { margin-bottom: 20px; }
 
         label {
             display: block;
@@ -75,7 +75,7 @@
         button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(90deg, #ffcc00, #ff8c00); /* Tilla va olov rang aralashmasi */
+            background: linear-gradient(90deg, #ffcc00, #ff8c00); 
             color: #000;
             border: none;
             border-radius: 8px;
@@ -85,7 +85,6 @@
             margin-top: 15px;
             transition: 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         button:hover {
@@ -105,21 +104,24 @@
             border-right: 4px solid #ff8c00;
         }
 
-        .result p {
-            margin: 10px 0;
-            font-size: 15px;
-            color: #ccc;
-        }
-
-        .result span {
-            font-weight: bold;
-            font-size: 1.6em;
-            display: block;
-            margin-top: 5px;
-        }
-
+        .result p { margin: 10px 0; font-size: 15px; color: #ccc; }
+        .result span { font-weight: bold; font-size: 1.6em; display: block; margin-top: 5px; }
         .uc-text { color: #ffcc00; }
-        .som-text { color: #00ff88; } /* Haqiqiy pul yashil rangda bo'lishi chiroyliroq */
+        .som-text { color: #00ff88; } 
+
+        /* TANGALAR UCHUN ANIMATSIYA */
+        .coin-effect {
+            position: absolute;
+            font-size: 25px;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -131,14 +133,12 @@
             <label>Royale Pass uchun (UC):</label>
             <input type="number" id="uc-rp" placeholder="Masalan: 360" min="0">
         </div>
-
         <div class="input-group">
-            <label>Qutilar (Crates) uchun (UC):</label>
+            <label>Qutilar uchun (UC):</label>
             <input type="number" id="uc-crates" placeholder="Masalan: 1200" min="0">
         </div>
-
         <div class="input-group">
-            <label>Skinlar va boshqalar uchun (UC):</label>
+            <label>Skinlar uchun (UC):</label>
             <input type="number" id="uc-skins" placeholder="Masalan: 600" min="0">
         </div>
 
@@ -146,11 +146,12 @@
 
         <div class="result" id="natija-qutisi">
             <p>Jami sarflangan: <span class="uc-text" id="jami-uc">0 UC</span></p>
-            <p>Haqiqiy pulda (Midasbuy bo'yicha): <span class="som-text" id="jami-som">0 so'm</span></p>
+            <p>Haqiqiy pulda: <span class="som-text" id="jami-som">0 so'm</span></p>
         </div>
     </div>
 
     <script>
+        // HISOB-KITOB
         function hisoblash() {
             let tugma = document.getElementById('hisob-tugmasi');
             let natijaQutisi = document.getElementById('natija-qutisi');
@@ -165,20 +166,36 @@
                 let skins = Number(document.getElementById('uc-skins').value) || 0;
 
                 let jamiUC = rp + crates + skins;
-                
-                // Midasbuy narxi: 60 UC = 11 500 so'm. 
                 let narxSomda = Math.round((jamiUC / 60) * 11500);
 
-                // Raqamlarni chiroyli qilib yozamiz
                 document.getElementById('jami-uc').innerText = jamiUC.toLocaleString('uz-UZ') + " UC";
                 document.getElementById('jami-som').innerText = narxSomda.toLocaleString('uz-UZ') + " so'm";
                 
                 tugma.innerText = "Hisoblash";
                 tugma.style.opacity = "1";
                 natijaQutisi.style.display = 'block'; 
-
             }, 800); 
         }
+
+        // TANGALAR VA OVOZ
+        document.addEventListener('click', function(e) {
+            let coinSound = new Audio('https://www.myinstants.com/media/sounds/mario-coin.mp3');
+            coinSound.volume = 0.6;
+            coinSound.play().catch(error => { console.log("Ovoz kutilmoqda"); });
+
+            let coin = document.createElement('div');
+            coin.className = 'coin-effect';
+            coin.innerText = '🪙';
+            
+            // XATO SHU YERDA EDI: Endi ham yonidan, ham tepasidan aniq hisoblab chiqadi
+            coin.style.left = (e.pageX - 12) + 'px';
+            coin.style.top = (e.pageY - 12) + 'px';
+            
+            document.body.appendChild(coin);
+
+            // 1 soniyadan keyin tangani o'chirib tashlaydi (qotib qolmasligi uchun)
+            setTimeout(() => { coin.remove(); }, 1000);
+        });
     </script>
 
 </body>
