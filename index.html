@@ -7,8 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            /* Orqa fonga PUBG rasmi qo'shildi */
-            background-image: url('https://wallpapercave.com/wp/wp4551550.jpg'); 
+            background-image: url('m416.jpg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -18,22 +17,46 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden; /* Ekran qimirlab ketmasligi uchun */
         }
 
+        /* YAngi: Orqa fondagi harakatlanuvchi chiziqlar (Sayt ishlayotganini bildiradi) */
+        .tech-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(0, 191, 255, 0.15) 3px,
+                rgba(0, 191, 255, 0.15) 6px
+            );
+            z-index: -1; /* Rasm va quti orasida bo'lishi uchun */
+            animation: scanline 15s linear infinite; /* Sekin harakatlanadi */
+            pointer-events: none; /* Tugmalarni bosishga xalaqit bermaydi */
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+
+        /* Quti dizayni */
         .calculator-box {
-            /* Quti orqasi biroz xira (shaffof) qilindi, zamonaviy oyna effekti */
-            background-color: rgba(30, 30, 30, 0.85);
+            background-color: rgba(20, 20, 20, 0.85);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
             width: 100%;
             max-width: 400px;
-            backdrop-filter: blur(5px); 
+            backdrop-filter: blur(8px); 
+            border: 1px solid #00bfff;
+            transition: 0.3s; /* Porlash effekti sekin ishlashi uchun */
         }
 
         h2 {
             text-align: center;
-            color: #ffa500;
+            color: #00bfff;
             margin-top: 0;
             text-shadow: 2px 2px 4px #000;
         }
@@ -60,14 +83,24 @@
             box-sizing: border-box;
             border: 1px solid #555;
             font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #00bfff;
+            box-shadow: 0 0 8px rgba(0, 191, 255, 0.8);
+        }
+        
+        .uc-price-input input {
+            border: 1px solid #ff0055; 
         }
 
         /* Tugma dizayni */
         button {
             width: 100%;
             padding: 12px;
-            background-color: #ffa500;
-            color: #000;
+            background: linear-gradient(90deg, #00bfff, #ff0055);
+            color: #fff;
             border: none;
             border-radius: 5px;
             font-weight: bold;
@@ -75,12 +108,12 @@
             cursor: pointer;
             margin-top: 10px;
             transition: 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            text-transform: uppercase;
         }
 
         button:hover {
-            background-color: #ffcc00;
-            transform: scale(1.02); /* Sishqoncha borganda ozgina kattalashadi */
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         .result {
@@ -90,11 +123,11 @@
             border-radius: 5px;
             text-align: center;
             display: none;
-            border: 1px solid #ffa500;
+            border: 1px solid #fff;
         }
 
         .result span {
-            color: #ffa500;
+            color: #00bfff;
             font-weight: bold;
             font-size: 1.4em;
         }
@@ -102,9 +135,15 @@
 </head>
 <body>
 
-    <div class="calculator-box">
-        <h2>PUBG UC Kalkulyatori</h2>
-        <p style="text-align: center; font-size: 13px; color: #ccc;">Akkauntingizga qancha sarflaganingizni hisoblang!</p>
+    <div class="tech-overlay"></div>
+
+    <div class="calculator-box" id="calc-box">
+        <h2>M416 Xarajatlar Kalkulyatori</h2>
+        
+        <div class="input-group uc-price-input">
+            <label>Hozirgi 1 UC narxi (so'mda):</label>
+            <input type="number" id="uc-narxi" value="150" min="1">
+        </div>
 
         <div class="input-group">
             <label>Royale Pass uchun (UC):</label>
@@ -121,28 +160,49 @@
             <input type="number" id="uc-skins" placeholder="Masalan: 600" min="0">
         </div>
 
-        <button onclick="hisoblash()">Hisoblash</button>
+        <button id="hisob-tugmasi" onclick="hisoblash()">Hisoblash</button>
 
         <div class="result" id="natija-qutisi">
             <p>Jami sarflangan: <br><span id="jami-uc">0</span> UC</p>
-            <p>Bu taxminan: <br><span id="jami-som">0</span> so'm</p>
+            <p>Haqiqiy pulda: <br><span id="jami-som" style="color: #ff0055;">0</span> so'm</p>
         </div>
     </div>
 
     <script>
         function hisoblash() {
-            let rp = Number(document.getElementById('uc-rp').value) || 0;
-            let crates = Number(document.getElementById('uc-crates').value) || 0;
-            let skins = Number(document.getElementById('uc-skins').value) || 0;
+            // HTML dagi elementlarni topib olamiz
+            let tugma = document.getElementById('hisob-tugmasi');
+            let quti = document.getElementById('calc-box');
+            let natijaQutisi = document.getElementById('natija-qutisi');
 
-            let jamiUC = rp + crates + skins;
-            let narxSomda = jamiUC * 150;
+            // 1. Tugma bosilganda darhol "Hisoblanmoqda..." deb yoziladi
+            tugma.innerText = "Hisoblanmoqda... ⚙️";
+            tugma.style.opacity = "0.8"; // Tugma sal xiralashadi
+            quti.style.boxShadow = "0 0 40px rgba(255, 0, 85, 0.8)"; // Quti qizg'ish (Shut) rangda porlaydi
+            natijaQutisi.style.display = 'none'; // Eskini yashiramiz
 
-            document.getElementById('jami-uc').innerText = jamiUC;
-            document.getElementById('jami-som').innerText = narxSomda.toLocaleString('uz-UZ');
-            
-            // Natijani ko'rsatish
-            document.getElementById('natija-qutisi').style.display = 'block';
+            // 2. JavaScript ga 1 soniya (1000 millisoniya) kutishni buyuramiz
+            setTimeout(function() {
+                // Hisob-kitob boshlanadi
+                let bittaUcNarxi = Number(document.getElementById('uc-narxi').value) || 0;
+                let rp = Number(document.getElementById('uc-rp').value) || 0;
+                let crates = Number(document.getElementById('uc-crates').value) || 0;
+                let skins = Number(document.getElementById('uc-skins').value) || 0;
+
+                let jamiUC = rp + crates + skins;
+                let narxSomda = jamiUC * bittaUcNarxi;
+
+                // Natijani yozamiz
+                document.getElementById('jami-uc').innerText = jamiUC;
+                document.getElementById('jami-som').innerText = narxSomda.toLocaleString('uz-UZ');
+                
+                // 3. Kutish tugagach, hamma narsani joyiga qaytaramiz
+                tugma.innerText = "Hisoblash";
+                tugma.style.opacity = "1";
+                quti.style.boxShadow = "0 0 20px rgba(0, 191, 255, 0.6)"; // Quti yana ko'k rangga qaytadi
+                natijaQutisi.style.display = 'block'; // Natijani ko'rsatamiz
+
+            }, 1000); // 1000 millisoniya = 1 soniya
         }
     </script>
 
