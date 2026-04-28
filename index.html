@@ -7,11 +7,12 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* MANA SHU YERGA SIZNING RASMINGIZ QO'YILDI */
             background-image: url('uc_kalkulyator_background.svg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-color: #111; 
+            background-color: #111; /* Agar internet sekinlashsa, qora fon turadi */
             color: #ffffff;
             margin: 0;
             display: flex;
@@ -21,20 +22,20 @@
         }
 
         .calculator-box {
-            background-color: rgba(15, 15, 15, 0.9); 
+            background-color: rgba(15, 15, 15, 0.85); /* Quti orqasi chiroyli shaffof bo'lishi uchun */
             padding: 35px 30px;
             border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0, 191, 255, 0.4);
+            box-shadow: 0 0 25px rgba(255, 165, 0, 0.4); /* Tangalarga moslashib, sariq-tilla rang nur sochadi */
             width: 100%;
             max-width: 400px;
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(0, 191, 255, 0.3);
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 165, 0, 0.3);
             transition: 0.3s;
         }
 
         h2 {
             text-align: center;
-            color: #00bfff;
+            color: #ffcc00; /* Tanga rangidagi sarlavha */
             margin-top: 0;
             margin-bottom: 25px;
             text-shadow: 2px 2px 4px #000;
@@ -67,15 +68,15 @@
         }
 
         input:focus {
-            border-color: #00bfff;
-            box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
         }
 
         button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(90deg, #00bfff, #ff0055);
-            color: #fff;
+            background: linear-gradient(90deg, #ffcc00, #ff8c00); /* Tilla va olov rang aralashmasi */
+            color: #000;
             border: none;
             border-radius: 8px;
             font-weight: bold;
@@ -89,7 +90,8 @@
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 0, 85, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.6);
+            background: linear-gradient(90deg, #ffb300, #e67e22);
         }
 
         .result {
@@ -99,8 +101,8 @@
             border-radius: 8px;
             text-align: center;
             display: none;
-            border-left: 4px solid #00bfff;
-            border-right: 4px solid #ff0055;
+            border-left: 4px solid #ffcc00;
+            border-right: 4px solid #ff8c00;
         }
 
         .result p {
@@ -116,8 +118,8 @@
             margin-top: 5px;
         }
 
-        .uc-text { color: #00bfff; }
-        .som-text { color: #ff0055; }
+        .uc-text { color: #ffcc00; }
+        .som-text { color: #00ff88; } /* Haqiqiy pul yashil rangda bo'lishi chiroyliroq */
     </style>
 </head>
 <body>
