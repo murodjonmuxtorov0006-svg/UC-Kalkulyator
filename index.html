@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-image: url('uc_kalkulyator_background.svg');
+            background-image: url('uc_kalkulyator_background.svg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -18,8 +18,6 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* Ekrandagi tangalar hisobiga sahifa siljib ketmasligi uchun: */
-            overflow-x: hidden; 
         }
 
         .calculator-box {
@@ -32,9 +30,6 @@
             backdrop-filter: blur(10px); 
             border: 1px solid rgba(0, 191, 255, 0.3);
             transition: 0.3s;
-            /* Quti ichini bosganda ham tangalar qutining ustidan chiqishi uchun: */
-            position: relative;
-            z-index: 10;
         }
 
         h2 {
@@ -123,26 +118,6 @@
 
         .uc-text { color: #00bfff; }
         .som-text { color: #ff0055; }
-
-        /* --- YANGI: TANGALAR UCHUN ANIMATSIYA VA DIZAYN --- */
-        .coin-effect {
-            position: absolute;
-            font-size: 25px; /* Tanganing kattaligi */
-            pointer-events: none; /* Tangalar boshqa narsalarni bosishga xalaqit bermaydi */
-            animation: floatUp 1s ease-out forwards; /* 1 soniya davomida tepaga uchib yo'qoladi */
-            z-index: 9999; /* Hamma narsaning eng ustida turadi */
-        }
-
-        @keyframes floatUp {
-            0% { 
-                transform: translateY(0) scale(1); 
-                opacity: 1; 
-            }
-            100% { 
-                transform: translateY(-80px) scale(1.5); /* 80 piksel tepaga uchadi va kattalashadi */
-                opacity: 0; /* Va ko'rinmas bo'lib qoladi */
-            }
-        }
     </style>
 </head>
 <body>
@@ -174,7 +149,6 @@
     </div>
 
     <script>
-        // --- 1-QISM: HISOB-KITOB MANTIQI ---
         function hisoblash() {
             let tugma = document.getElementById('hisob-tugmasi');
             let natijaQutisi = document.getElementById('natija-qutisi');
@@ -190,9 +164,10 @@
 
                 let jamiUC = rp + crates + skins;
                 
-                // Midasbuy narxi: 60 UC = 11 500 so'm.
+                // Midasbuy narxi: 60 UC = 11 500 so'm. 
                 let narxSomda = Math.round((jamiUC / 60) * 11500);
 
+                // Raqamlarni chiroyli qilib yozamiz
                 document.getElementById('jami-uc').innerText = jamiUC.toLocaleString('uz-UZ') + " UC";
                 document.getElementById('jami-som').innerText = narxSomda.toLocaleString('uz-UZ') + " so'm";
                 
@@ -202,31 +177,6 @@
 
             }, 800); 
         }
-
-        // --- 2-QISM: HAR BIR BOSISHDAGI TANGA VA OVOZ EFFEKTI ---
-        document.addEventListener('click', function(e) {
-            // Ovozni tayyorlash va chalish (Internetdagi tayyor tanga ovozi ulandi)
-            let coinSound = new Audio('https://www.myinstants.com/media/sounds/mario-coin.mp3');
-            coinSound.volume = 0.6; // Ovoz balandligi (0 dan 1 gacha)
-            coinSound.play().catch(error => {
-                // Brauzer birinchi marta ovoz chiqarishga ruxsat bermasa, xatolikni yashiramiz
-                console.log("Ovoz kutib turibdi"); 
-            });
-
-            // Tanga elementini yaratamiz
-            let coin = document.createElement('div');
-            coin.className = 'coin-effect';
-            coin.innerText = '🪙'; // Tangani belgisi. Xohlasangiz boshqa emoji qo'yish mumkin
-            
-            // Tangani aynan sichqoncha bosilgan joyga joylashtirish
-            coin.style.left = (e.pageX - 10) + 'px';
-            document.body.appendChild(coin);
-
-            // 1 soniyadan keyin tangani sayt xotirasidan o'chirib tashlash (qotib qolmasligi uchun)
-            setTimeout(() => {
-                coin.remove();
-            }, 1000);
-        });
     </script>
 
 </body>
