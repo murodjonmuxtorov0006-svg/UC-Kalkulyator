@@ -3,147 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PUBG Xarajatlar Kalkulyatori</title>
+    <title>UC Kalkulyator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-image: url('m416.jpg'); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://wallpapercave.com/wp/wp5273188.jpg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            background-color: #111; 
             color: #ffffff;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden; /* Ekran qimirlab ketmasligi uchun */
+            /* Ekrandagi tangalar hisobiga sahifa siljib ketmasligi uchun: */
+            overflow-x: hidden; 
         }
 
-        /* YAngi: Orqa fondagi harakatlanuvchi chiziqlar (Sayt ishlayotganini bildiradi) */
-        .tech-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 3px,
-                rgba(0, 191, 255, 0.15) 3px,
-                rgba(0, 191, 255, 0.15) 6px
-            );
-            z-index: -1; /* Rasm va quti orasida bo'lishi uchun */
-            animation: scanline 15s linear infinite; /* Sekin harakatlanadi */
-            pointer-events: none; /* Tugmalarni bosishga xalaqit bermaydi */
-        }
-
-        @keyframes scanline {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100vh; }
-        }
-
-        /* Quti dizayni */
         .calculator-box {
-            background-color: rgba(20, 20, 20, 0.85);
-            padding: 30px;
+            background-color: rgba(15, 15, 15, 0.9); 
+            padding: 35px 30px;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
+            box-shadow: 0 0 25px rgba(0, 191, 255, 0.4);
             width: 100%;
             max-width: 400px;
-            backdrop-filter: blur(8px); 
-            border: 1px solid #00bfff;
-            transition: 0.3s; /* Porlash effekti sekin ishlashi uchun */
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(0, 191, 255, 0.3);
+            transition: 0.3s;
+            /* Quti ichini bosganda ham tangalar qutining ustidan chiqishi uchun: */
+            position: relative;
+            z-index: 10;
         }
 
         h2 {
             text-align: center;
             color: #00bfff;
             margin-top: 0;
+            margin-bottom: 25px;
             text-shadow: 2px 2px 4px #000;
+            font-size: 24px;
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-size: 14px;
             font-weight: bold;
-            text-shadow: 1px 1px 2px #000;
+            color: #ddd;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: rgba(0, 0, 0, 0.7);
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.6);
             color: #fff;
             box-sizing: border-box;
-            border: 1px solid #555;
             font-size: 16px;
             outline: none;
+            transition: 0.3s;
         }
 
         input:focus {
             border-color: #00bfff;
-            box-shadow: 0 0 8px rgba(0, 191, 255, 0.8);
-        }
-        
-        .uc-price-input input {
-            border: 1px solid #ff0055; 
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
         }
 
-        /* Tugma dizayni */
         button {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: linear-gradient(90deg, #00bfff, #ff0055);
             color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
             transition: 0.3s;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 85, 0.4);
         }
 
         .result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 5px;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
             text-align: center;
             display: none;
-            border: 1px solid #fff;
+            border-left: 4px solid #00bfff;
+            border-right: 4px solid #ff0055;
+        }
+
+        .result p {
+            margin: 10px 0;
+            font-size: 15px;
+            color: #ccc;
         }
 
         .result span {
-            color: #00bfff;
             font-weight: bold;
-            font-size: 1.4em;
+            font-size: 1.6em;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .uc-text { color: #00bfff; }
+        .som-text { color: #ff0055; }
+
+        /* --- YANGI: TANGALAR UCHUN ANIMATSIYA VA DIZAYN --- */
+        .coin-effect {
+            position: absolute;
+            font-size: 25px; /* Tanganing kattaligi */
+            pointer-events: none; /* Tangalar boshqa narsalarni bosishga xalaqit bermaydi */
+            animation: floatUp 1s ease-out forwards; /* 1 soniya davomida tepaga uchib yo'qoladi */
+            z-index: 9999; /* Hamma narsaning eng ustida turadi */
+        }
+
+        @keyframes floatUp {
+            0% { 
+                transform: translateY(0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(-80px) scale(1.5); /* 80 piksel tepaga uchadi va kattalashadi */
+                opacity: 0; /* Va ko'rinmas bo'lib qoladi */
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="tech-overlay"></div>
-
     <div class="calculator-box" id="calc-box">
-        <h2>M416 Xarajatlar Kalkulyatori</h2>
-        
-        <div class="input-group uc-price-input">
-            <label>Hozirgi 1 UC narxi (so'mda):</label>
-            <input type="number" id="uc-narxi" value="150" min="1">
-        </div>
+        <h2>UC Kalkulyator</h2>
 
         <div class="input-group">
             <label>Royale Pass uchun (UC):</label>
@@ -163,47 +168,65 @@
         <button id="hisob-tugmasi" onclick="hisoblash()">Hisoblash</button>
 
         <div class="result" id="natija-qutisi">
-            <p>Jami sarflangan: <br><span id="jami-uc">0</span> UC</p>
-            <p>Haqiqiy pulda: <br><span id="jami-som" style="color: #ff0055;">0</span> so'm</p>
+            <p>Jami sarflangan: <span class="uc-text" id="jami-uc">0 UC</span></p>
+            <p>Haqiqiy pulda (Midasbuy bo'yicha): <span class="som-text" id="jami-som">0 so'm</span></p>
         </div>
     </div>
 
     <script>
+        // --- 1-QISM: HISOB-KITOB MANTIQI ---
         function hisoblash() {
-            // HTML dagi elementlarni topib olamiz
             let tugma = document.getElementById('hisob-tugmasi');
-            let quti = document.getElementById('calc-box');
             let natijaQutisi = document.getElementById('natija-qutisi');
 
-            // 1. Tugma bosilganda darhol "Hisoblanmoqda..." deb yoziladi
             tugma.innerText = "Hisoblanmoqda... ⚙️";
-            tugma.style.opacity = "0.8"; // Tugma sal xiralashadi
-            quti.style.boxShadow = "0 0 40px rgba(255, 0, 85, 0.8)"; // Quti qizg'ish (Shut) rangda porlaydi
-            natijaQutisi.style.display = 'none'; // Eskini yashiramiz
+            tugma.style.opacity = "0.8";
+            natijaQutisi.style.display = 'none'; 
 
-            // 2. JavaScript ga 1 soniya (1000 millisoniya) kutishni buyuramiz
             setTimeout(function() {
-                // Hisob-kitob boshlanadi
-                let bittaUcNarxi = Number(document.getElementById('uc-narxi').value) || 0;
                 let rp = Number(document.getElementById('uc-rp').value) || 0;
                 let crates = Number(document.getElementById('uc-crates').value) || 0;
                 let skins = Number(document.getElementById('uc-skins').value) || 0;
 
                 let jamiUC = rp + crates + skins;
-                let narxSomda = jamiUC * bittaUcNarxi;
-
-                // Natijani yozamiz
-                document.getElementById('jami-uc').innerText = jamiUC;
-                document.getElementById('jami-som').innerText = narxSomda.toLocaleString('uz-UZ');
                 
-                // 3. Kutish tugagach, hamma narsani joyiga qaytaramiz
+                // Midasbuy narxi: 60 UC = 11 500 so'm.
+                let narxSomda = Math.round((jamiUC / 60) * 11500);
+
+                document.getElementById('jami-uc').innerText = jamiUC.toLocaleString('uz-UZ') + " UC";
+                document.getElementById('jami-som').innerText = narxSomda.toLocaleString('uz-UZ') + " so'm";
+                
                 tugma.innerText = "Hisoblash";
                 tugma.style.opacity = "1";
-                quti.style.boxShadow = "0 0 20px rgba(0, 191, 255, 0.6)"; // Quti yana ko'k rangga qaytadi
-                natijaQutisi.style.display = 'block'; // Natijani ko'rsatamiz
+                natijaQutisi.style.display = 'block'; 
 
-            }, 1000); // 1000 millisoniya = 1 soniya
+            }, 800); 
         }
+
+        // --- 2-QISM: HAR BIR BOSISHDAGI TANGA VA OVOZ EFFEKTI ---
+        document.addEventListener('click', function(e) {
+            // Ovozni tayyorlash va chalish (Internetdagi tayyor tanga ovozi ulandi)
+            let coinSound = new Audio('https://www.myinstants.com/media/sounds/mario-coin.mp3');
+            coinSound.volume = 0.6; // Ovoz balandligi (0 dan 1 gacha)
+            coinSound.play().catch(error => {
+                // Brauzer birinchi marta ovoz chiqarishga ruxsat bermasa, xatolikni yashiramiz
+                console.log("Ovoz kutib turibdi"); 
+            });
+
+            // Tanga elementini yaratamiz
+            let coin = document.createElement('div');
+            coin.className = 'coin-effect';
+            coin.innerText = '🪙'; // Tangani belgisi. Xohlasangiz boshqa emoji qo'yish mumkin
+            
+            // Tangani aynan sichqoncha bosilgan joyga joylashtirish
+            coin.style.left = (e.pageX - 10) + 'px';
+            document.body.appendChild(coin);
+
+            // 1 soniyadan keyin tangani sayt xotirasidan o'chirib tashlash (qotib qolmasligi uchun)
+            setTimeout(() => {
+                coin.remove();
+            }, 1000);
+        });
     </script>
 
 </body>
