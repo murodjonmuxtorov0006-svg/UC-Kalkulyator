@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mening Kunlik Yordamchim</title>
+    <style>
+        /* ASOSIY DIZAYN */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+        }
+
+        /* JONLI SOAT DIZAYNI */
+        #soat {
+            font-size: 30px;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* QUTILARNI YONMA-YON QILISH UCHUN */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* HAR BIR QUTI (VAZIFA VA BLOKNOT) */
+        .box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .box h2 {
+            margin-top: 0;
+            color: #4a69bd;
+            border-bottom: 2px solid #f1f2f6;
+            padding-bottom: 10px;
+        }
+
+        /* KIRITISH MAYDONLARI */
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        textarea {
+            height: 150px;
+            resize: none;
+        }
+
+        button {
+            background: #4a69bd;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #3c55a5;
+        }
+
+        /* VAZIFALAR RO'YXATI DIZAYNI */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background: #f1f2f6;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li button {
+            background: #e55039;
+            padding: 5px 10px;
+        }
+
+        li button:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Kunlik Yordamchim</h1>
+        <div id="soat">00:00:00</div>
+    </div>
+
+    <div class="container">
+        <div class="box">
+            <h2>📝 Kunlik Rejalar</h2>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="yangi-vazifa" placeholder="Nima ish qilamiz?">
+                <button onclick="vazifaQoshish()">Qo'shish</button>
+            </div>
+            <ul id="vazifalar-royxati">
+                </ul>
+        </div>
+
+        <div class="box">
+            <h2>📒 Tezkor Qaydlar</h2>
+            <textarea id="bloknot" placeholder="Muhim narsalarni shu yerga yozib qo'ying..."></textarea>
+            <button onclick="qaydniSaqlash()" style="width: 100%;">Saqlash</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. JONLI SOAT ---
+        // Har 1 soniyada vaqtni yangilab turadigan qism
+        setInterval(function() {
+            let hozir = new Date();
+            document.getElementById('soat').innerText = hozir.toLocaleTimeString('uz-UZ');
+        }, 1000);
+
+        // --- 2. VAZIFALAR RO'YXATI (TO-DO LIST) ---
+        let royxat = document.getElementById('vazifalar-royxati');
+        
+        // Sayt ochilganda brauzer xotirasidan eski vazifalarni o'qib olish
+        royxat.innerHTML = localStorage.getItem('saqlanganVazifalar') || '';
+
+        // Yangi vazifa qo'shish funksiyasi
+        function vazifaQoshish() {
+            let kiritilganMatn = document.getElementById('yangi-vazifa').value;
+            
+            // Agar hech narsa yozilmagan bo'lsa, to'xtatish
+            if(kiritilganMatn === '') return; 
+
+            // Yangi qator yaratish va unga o'chirish tugmasini (X) qo'shish
+            let yangiQator = `<li>${kiritilganMatn} <button onclick="this.parentElement.remove(); vazifalarniSaqlash()">X</button></li>`;
+            
+            royxat.innerHTML += yangiQator; // Ro'yxatga qo'shish
+            document.getElementById('yangi-vazifa').value = ''; // Qutini tozalash
+            
+            vazifalarniSaqlash(); // Xotiraga saqlash
+        }
+
+        // Vazifalarni xotiraga saqlash funksiyasi
+        function vazifalarniSaqlash() {
+            localStorage.setItem('saqlanganVazifalar', royxat.innerHTML);
+        }
+
+        // --- 3. TEZKOR BLOKNOT ---
+        let bloknotQutisi = document.getElementById('bloknot');
+        
+        // Sayt ochilganda eski yozuvlarni xotiradan yuklash
+        bloknotQutisi.value = localStorage.getItem('saqlanganQaydlar') || '';
+
+        // Yozuvni saqlash funksiyasi
+        function qaydniSaqlash() {
+            localStorage.setItem('saqlanganQaydlar', bloknotQutisi.value);
+            // Saqlanganini bildirish uchun tugma matnini qisqa vaqtga o'zgartiramiz
+            let btn = event.target;
+            btn.innerText = "Saqlandi ✔️";
+            setTimeout(() => btn.innerText = "Saqlash", 1500);
+        }
+    </script>
+
+</body>
+</html>
