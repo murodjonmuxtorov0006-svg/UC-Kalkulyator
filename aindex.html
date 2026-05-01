@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mening Kunlik Yordamchim</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a69bd">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2387/2387679.png">
+
     <style>
         /* ASOSIY DIZAYN */
         body {
@@ -191,10 +196,4 @@
             localStorage.setItem('saqlanganQaydlar', bloknotQutisi.value);
             // Saqlanganini bildirish uchun tugma matnini qisqa vaqtga o'zgartiramiz
             let btn = event.target;
-            btn.innerText = "Saqlandi ✔️";
-            setTimeout(() => btn.innerText = "Saqlash", 1500);
-        }
-    </script>
-
-</body>
-</html>
+            btn.innerText
