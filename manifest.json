@@ -1,0 +1,16 @@
+{
+  "name": "Kunlik Yordamchim PRO",
+  "short_name": "Yordamchim",
+  "description": "Vaqtni va vazifalarni boshqarish uchun mukammal dastur",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#74ebd5",
+  "theme_color": "#4a69bd",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2387/2387679.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
